@@ -4,6 +4,10 @@ on:
   push:
     branches: [ "task01" ]
 
+defaults:
+  run:
+    working-directory: practice2026
+
 jobs:
   build:
     runs-on: ubuntu-latest
