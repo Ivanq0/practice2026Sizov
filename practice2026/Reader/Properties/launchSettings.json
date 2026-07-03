@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Reader": {
+      "commandName": "Project",
+      "commandLineArgs": "\"C:\\Users\\vanek\\Desktop\\repo\\practice2026\\task07\\bin\\Debug\\net8.0\\task07.dll\""
+    }
+  }
+}
