@@ -1,4 +1,4 @@
-using System.ComponentModel;
+п»їusing System.ComponentModel;
 using System.Reflection;
 using Xunit;
 using task07;
@@ -11,7 +11,7 @@ public class AttributeReflectionTests
         var type = typeof(SampleClass);
         var attribute = type.GetCustomAttribute<task07.DisplayNameAttribute>();
         Assert.NotNull(attribute);
-        Assert.Equal("Пример класса", attribute.DisplayName);
+        Assert.Equal("РџСЂРёРјРµСЂ РєР»Р°СЃСЃР°", attribute.DisplayName);
     }
 
     [Fact]
@@ -20,7 +20,7 @@ public class AttributeReflectionTests
         var method = typeof(SampleClass).GetMethod("TestMethod");
         var attribute = method.GetCustomAttribute<task07.DisplayNameAttribute>();
         Assert.NotNull(attribute);
-        Assert.Equal("Тестовый метод", attribute.DisplayName);
+        Assert.Equal("РўРµСЃС‚РѕРІС‹Р№ РјРµС‚РѕРґ", attribute.DisplayName);
     }
 
     [Fact]
@@ -29,7 +29,7 @@ public class AttributeReflectionTests
         var prop = typeof(SampleClass).GetProperty("Number");
         var attribute = prop.GetCustomAttribute<task07.DisplayNameAttribute>();
         Assert.NotNull(attribute);
-        Assert.Equal("Числовое свойство", attribute.DisplayName);
+        Assert.Equal("Р§РёСЃР»РѕРІРѕРµ СЃРІРѕР№СЃС‚РІРѕ", attribute.DisplayName);
     }
 
     [Fact]
