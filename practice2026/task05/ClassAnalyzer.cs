@@ -47,7 +47,11 @@ namespace task05
         }
         public bool HasAttribute<T>() where T : Attribute
         {
-            return _type.GetCustomAttribute<T>() != null;
+            if (_type == null)
+            {
+                throw new InvalidOperationException("Null object");
+            }
+            return Attribute.IsDefined(_type, typeof(T), inherit: true);
         }
     }
 }
