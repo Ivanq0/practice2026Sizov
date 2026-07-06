@@ -1,6 +1,5 @@
 using Moq;
 using task03;
-using Xunit;
 
 public class IteratorTests
 {
