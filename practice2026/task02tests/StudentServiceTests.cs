@@ -1,4 +1,3 @@
-using Xunit;
 using task02;
 
 public class StudentServiceTests
