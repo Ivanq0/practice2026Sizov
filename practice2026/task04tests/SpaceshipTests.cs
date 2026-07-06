@@ -1,6 +1,5 @@
 using Moq;
 using task04;
-using Xunit;
 
 public class SpaceshipTests
 {
