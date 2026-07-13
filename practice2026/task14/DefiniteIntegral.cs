@@ -56,4 +56,20 @@ public class DefiniteIntegral
 
         return TotalResult;
     }
+    public static double SolveSingleThreaded(double a, double b, Func<double, double> function, double step)
+    {
+        double totalSum = 0;
+        double currentX = a;
+
+        while (currentX < b)
+        {
+            double nextX = currentX + step;
+            if (nextX > b) nextX = b;
+
+            totalSum += (function(currentX) + function(nextX)) * (nextX - currentX) / 2.0;
+            currentX = nextX;
+        }
+
+        return totalSum;
+    }
 }
