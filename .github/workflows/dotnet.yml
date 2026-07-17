@@ -2,7 +2,7 @@ name: .NET CI
 
 on:
   push:
-    branches: [ "task03" ]
+    branches: [ "task17" ]
 
 defaults:
   run:
