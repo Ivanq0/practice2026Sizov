@@ -4,6 +4,27 @@ using System.Threading;
 
 namespace task17
 {
+    public class RoundRobinScheduler : IScheduler
+    {
+        private readonly Queue<ICommand> _jobs = new Queue<ICommand>();
+
+        public bool HasCommand() => _jobs.Count > 0;
+
+        public ICommand Select()
+        {
+            if (_jobs.Count == 0) return null;
+            return _jobs.Dequeue();
+        }
+
+        public void Add(ICommand cmd)
+        {
+            if (cmd != null)
+            {
+                _jobs.Enqueue(cmd);
+            }
+        }
+    }
+
     public static class ExceptionHandler
     {
         public static void Handle(ICommand cmd, Exception ex)
@@ -16,12 +37,14 @@ namespace task17
     {
         private readonly BlockingCollection<ICommand> _queue;
         private readonly Thread _thread;
+        private readonly IScheduler _scheduler;
         private bool _stopRequested = false;
 
-        public ServerThread(BlockingCollection<ICommand> queue)
+        public ServerThread(BlockingCollection<ICommand> queue, IScheduler scheduler)
         {
             _queue = queue;
             _thread = new Thread(Run);
+            _scheduler = scheduler;
         }
 
         public void Start() => _thread.Start();
@@ -44,26 +67,49 @@ namespace task17
         {
             while (!_stopRequested)
             {
-                try
+                bool hasLocalWork = _scheduler.HasCommand();
+                if (hasLocalWork)
                 {
-                    ICommand cmd = _queue.Take();
+                    while (_queue.TryTake(out ICommand newCmd))
+                    {
+                        _scheduler.Add(newCmd);
+                    }
 
+                    ICommand cmd = _scheduler.Select();
                     try
                     {
                         cmd.Execute();
+
+                        if (cmd is ILongRunningCommand longCmd && !longCmd.IsCompleted)
+                        {
+                            _scheduler.Add(longCmd);
+                        }
                     }
                     catch (Exception ex)
                     {
                         ExceptionHandler.Handle(cmd, ex);
                     }
                 }
-                catch (InvalidOperationException)
+                else
                 {
-                    break;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Критическая ошибка в потоке: {ex.Message}");
+                    if (_queue.IsCompleted)
+                    {
+                        break;
+                    }
+
+                    try
+                    {
+                        ICommand cmd = _queue.Take();
+                        _scheduler.Add(cmd);
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        break;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Критическая ошибка в потоке: {ex.Message}");
+                    }
                 }
             }
         }

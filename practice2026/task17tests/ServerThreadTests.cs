@@ -4,79 +4,101 @@ using System.Threading;
 using task17;
 using Xunit;
 
-namespace task17tests
+namespace task18
 {
-    public class ServerThreadTests
+    public class StepwiseTestCommand : ILongRunningCommand
     {
-        private class TestCommand : ICommand
-        {
-            public bool WasExecuted { get; private set; } = false;
+        public int StepsDone { get; private set; } = 0;
+        private readonly int _totalSteps;
 
-            public void Execute()
+        public bool IsCompleted => StepsDone >= _totalSteps;
+
+        public StepwiseTestCommand(int totalSteps)
+        {
+            _totalSteps = totalSteps;
+        }
+
+        public void Execute()
+        {
+            if (!IsCompleted)
             {
-                WasExecuted = true;
+                StepsDone++;
             }
         }
+    }
+
+    public class SchedulerTests
+    {
+        [Fact]
+        public void Test_RoundRobin_SchedulesCorrectly()
+        {
+            var scheduler = new RoundRobinScheduler();
+            var cmd1 = new StepwiseTestCommand(3);
+            var cmd2 = new StepwiseTestCommand(3);
+
+            scheduler.Add(cmd1);
+            scheduler.Add(cmd2);
+
+            var run1 = scheduler.Select();
+            run1.Execute();
+            scheduler.Add(cmd1);
+
+            var run2 = scheduler.Select();
+            run2.Execute();
+            scheduler.Add(cmd2);
+
+            Assert.Equal(1, cmd1.StepsDone);
+            Assert.Equal(1, cmd2.StepsDone);
+        }
 
         [Fact]
-        public void HardStop_ShouldStopImmediately_AndIgnoreRemainingCommands()
+        public void Test_ServerThread_ProcessesStepwiseCommandsUntilCompleted()
         {
             var queue = new BlockingCollection<ICommand>();
-            var server = new ServerThread(queue);
+            var scheduler = new RoundRobinScheduler();
+            var server = new ServerThread(queue, scheduler);
 
-            var cmd1 = new TestCommand();
-            var hardStop = new HardStopCommand(server);
-            var cmd2 = new TestCommand();
-
-            queue.Add(cmd1);
-            queue.Add(hardStop);
-            queue.Add(cmd2);
+            var longCmd = new StepwiseTestCommand(5);
+            queue.Add(longCmd);
+            queue.Add(new SoftStopCommand(server));
 
             server.Start();
             server.Join();
 
-            Assert.True(cmd1.WasExecuted);
-            Assert.False(cmd2.WasExecuted);
+            Assert.True(longCmd.IsCompleted);
+            Assert.Equal(5, longCmd.StepsDone);
         }
 
         [Fact]
-        public void SoftStop_ShouldFinishAllQueuedCommandsBeforeStopping()
+        public void Test_HardStop_InterruptsLongRunningTasks()
         {
             var queue = new BlockingCollection<ICommand>();
-            var server = new ServerThread(queue);
+            var scheduler = new RoundRobinScheduler();
+            var server = new ServerThread(queue, scheduler);
 
-            var cmd1 = new TestCommand();
+            var endlessCmd = new StepwiseTestCommand(1000);
+
+            queue.Add(endlessCmd);
+            queue.Add(new HardStopCommand(server));
+
+            server.Start();
+            server.Join();
+
+            Assert.False(endlessCmd.IsCompleted);
+            Assert.True(endlessCmd.StepsDone < 1000);
+        }
+
+        [Fact]
+        public void Test_Security_StopCommandsThrowExceptionInWrongThread()
+        {
+            var queue = new BlockingCollection<ICommand>();
+            var scheduler = new RoundRobinScheduler();
+            var server = new ServerThread(queue, scheduler);
+
+            var hardStop = new HardStopCommand(server);
             var softStop = new SoftStopCommand(server);
-            var cmd2 = new TestCommand();
-
-            queue.Add(cmd1);
-            queue.Add(softStop);
-            queue.Add(cmd2);
-
-            server.Start();
-            server.Join();
-
-            Assert.True(cmd1.WasExecuted);
-            Assert.True(cmd2.WasExecuted);
-        }
-
-        [Fact]
-        public void HardStop_ShouldThrowException_WhenExecutedInWrongThread()
-        {
-            var queue = new BlockingCollection<ICommand>();
-            var server = new ServerThread(queue);
-            var hardStop = new HardStopCommand(server);
 
             Assert.Throws<InvalidOperationException>(() => hardStop.Execute());
-        }
-
-        [Fact]
-        public void SoftStop_ShouldThrowException_WhenExecutedInWrongThread()
-        {
-            var queue = new BlockingCollection<ICommand>();
-            var server = new ServerThread(queue);
-            var softStop = new SoftStopCommand(server);
-
             Assert.Throws<InvalidOperationException>(() => softStop.Execute());
         }
     }
