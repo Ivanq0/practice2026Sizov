@@ -1,0 +1,47 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 450" width="100%" height="100%" style="background-color:#1e1e24; font-family:Segoe UI, sans-serif;">
+  <defs>
+    <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#818cf8" />
+      <stop offset="100%" stop-color="#ec4899" />
+    </linearGradient>
+    <linearGradient id="areaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#818cf8" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#818cf8" stop-opacity="0.0" />
+    </linearGradient>
+  </defs>
+  <text x="350" y="35" fill="#f3f4f6" font-size="18" font-weight="bold" text-anchor="middle">Зависимость времени от размера кванта вычислений (ЛР 19)</text>
+  <line x1="80" y1="380" x2="640" y2="380" stroke="#4b5563" stroke-dasharray="4,4" stroke-width="1" />
+  <text x="70" y="384" fill="#9ca3af" font-size="11" text-anchor="end">14,1 мс</text>
+  <line x1="80" y1="318" x2="640" y2="318" stroke="#4b5563" stroke-dasharray="4,4" stroke-width="1" />
+  <text x="70" y="322" fill="#9ca3af" font-size="11" text-anchor="end">17,4 мс</text>
+  <line x1="80" y1="256" x2="640" y2="256" stroke="#4b5563" stroke-dasharray="4,4" stroke-width="1" />
+  <text x="70" y="260" fill="#9ca3af" font-size="11" text-anchor="end">20,6 мс</text>
+  <line x1="80" y1="194" x2="640" y2="194" stroke="#4b5563" stroke-dasharray="4,4" stroke-width="1" />
+  <text x="70" y="198" fill="#9ca3af" font-size="11" text-anchor="end">23,8 мс</text>
+  <line x1="80" y1="132" x2="640" y2="132" stroke="#4b5563" stroke-dasharray="4,4" stroke-width="1" />
+  <text x="70" y="136" fill="#9ca3af" font-size="11" text-anchor="end">27,0 мс</text>
+  <line x1="80" y1="70" x2="640" y2="70" stroke="#4b5563" stroke-dasharray="4,4" stroke-width="1" />
+  <text x="70" y="74" fill="#9ca3af" font-size="11" text-anchor="end">30,2 мс</text>
+  <path d="M 80 380 L 80 107,81666429819774 L 192 95,83333333333331 L 304 346,00903633231366 L 416 337,0611476353954 L 528 354,1666666666667 L 640 344,9347486805135 L 640 380 Z" fill="url(#areaGrad)" />
+  <path d="M 80 107,81666429819774 L 192 95,83333333333331 L 304 346,00903633231366 L 416 337,0611476353954 L 528 354,1666666666667 L 640 344,9347486805135 " fill="none" stroke="url(#lineGrad)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+  <circle cx="80" cy="107,81666429819774" r="6" fill="#1e1e24" stroke="#ec4899" stroke-width="3" />
+  <text x="80" y="95,81666429819774" fill="#f3f4f6" font-size="11" font-weight="bold" text-anchor="middle">28,2 мс</text>
+  <text x="80" y="400" fill="#9ca3af" font-size="11" text-anchor="middle">q = 10</text>
+  <circle cx="192" cy="95,83333333333331" r="6" fill="#1e1e24" stroke="#ec4899" stroke-width="3" />
+  <text x="192" y="83,83333333333331" fill="#f3f4f6" font-size="11" font-weight="bold" text-anchor="middle">28,8 мс</text>
+  <text x="192" y="400" fill="#9ca3af" font-size="11" text-anchor="middle">q = 50</text>
+  <circle cx="304" cy="346,00903633231366" r="6" fill="#1e1e24" stroke="#ec4899" stroke-width="3" />
+  <text x="304" y="334,00903633231366" fill="#f3f4f6" font-size="11" font-weight="bold" text-anchor="middle">15,9 мс</text>
+  <text x="304" y="400" fill="#9ca3af" font-size="11" text-anchor="middle">q = 250</text>
+  <circle cx="416" cy="337,0611476353954" r="6" fill="#1e1e24" stroke="#ec4899" stroke-width="3" />
+  <text x="416" y="325,0611476353954" fill="#f3f4f6" font-size="11" font-weight="bold" text-anchor="middle">16,4 мс</text>
+  <text x="416" y="400" fill="#9ca3af" font-size="11" text-anchor="middle">q = 1250</text>
+  <circle cx="528" cy="354,1666666666667" r="6" fill="#1e1e24" stroke="#ec4899" stroke-width="3" />
+  <text x="528" y="342,1666666666667" fill="#f3f4f6" font-size="11" font-weight="bold" text-anchor="middle">15,5 мс</text>
+  <text x="528" y="400" fill="#9ca3af" font-size="11" text-anchor="middle">q = 6250</text>
+  <circle cx="640" cy="344,9347486805135" r="6" fill="#1e1e24" stroke="#ec4899" stroke-width="3" />
+  <text x="640" y="332,9347486805135" fill="#f3f4f6" font-size="11" font-weight="bold" text-anchor="middle">16,0 мс</text>
+  <text x="640" y="400" fill="#9ca3af" font-size="11" text-anchor="middle">q = 31250</text>
+  <text x="350" y="430" fill="#f3f4f6" font-size="12" text-anchor="middle">Размер кванта вычислений (кол-во операций на один шаг Execute)</text>
+  <text x="20" y="225" fill="#f3f4f6" font-size="12" text-anchor="middle" transform="rotate(-90 20 225)">Время вычислений (мс)</text>
+</svg>

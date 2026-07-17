@@ -27,8 +27,29 @@ namespace task18
         }
     }
 
+    public class SimpleTestCommand : ICommand
+    {
+        public bool Executed { get; private set; } = false;
+        public void Execute() => Executed = true;
+    }
+
     public class SchedulerTests
     {
+        [Fact]
+        public void Test_LongRunningDecorator_CompletesAfterCorrectRuns()
+        {
+            var simpleCmd = new SimpleTestCommand();
+            var longCmd = new LongRunningCommand(simpleCmd, 3);
+
+            Assert.False(longCmd.IsCompleted);
+
+            longCmd.Execute();
+            longCmd.Execute();
+            longCmd.Execute();
+
+            Assert.True(longCmd.IsCompleted);
+        }
+
         [Fact]
         public void Test_RoundRobin_SchedulesCorrectly()
         {
@@ -49,6 +70,29 @@ namespace task18
 
             Assert.Equal(1, cmd1.StepsDone);
             Assert.Equal(1, cmd2.StepsDone);
+        }
+
+        [Fact]
+        public void Test_RoundRobin_InterleavesExecutionCorrectly()
+        {
+            var scheduler = new RoundRobinScheduler();
+
+            var baseCmd1 = new SimpleTestCommand();
+            var baseCmd2 = new SimpleTestCommand();
+
+            var cmd1 = new LongRunningCommand(baseCmd1, 2);
+            var cmd2 = new LongRunningCommand(baseCmd2, 2);
+
+            scheduler.Add(cmd1);
+            scheduler.Add(cmd2);
+
+            var step1 = scheduler.Select();
+            Assert.Same(cmd1, step1);
+            step1.Execute();
+            scheduler.Add(cmd1);
+
+            var step2 = scheduler.Select();
+            Assert.Same(cmd2, step2);
         }
 
         [Fact]

@@ -25,11 +25,45 @@ namespace task17
         }
     }
 
+    public class LongRunningCommand : ILongRunningCommand
+    {
+        private readonly ICommand _innerCommand;
+        private readonly int _totalRuns;
+        private int _currentRuns = 0;
+
+        public bool IsCompleted => _currentRuns >= _totalRuns;
+
+        public LongRunningCommand(ICommand innerCommand, int totalRuns)
+        {
+            _innerCommand = innerCommand ?? throw new ArgumentNullException(nameof(innerCommand));
+            _totalRuns = totalRuns;
+        }
+
+        public void Execute()
+        {
+            if (!IsCompleted)
+            {
+                _innerCommand.Execute();
+                _currentRuns++;
+            }
+        }
+    }
+
     public static class ExceptionHandler
     {
         public static void Handle(ICommand cmd, Exception ex)
         {
             Console.WriteLine($"[Ошибка] Команда {cmd.GetType().Name} завершилась с ошибкой: {ex.Message}");
+        }
+    }
+
+    public class TestCommand(int id) : ICommand
+    {
+        private int counter = 0;
+
+        public void Execute()
+        {
+            Console.WriteLine($"Поток {id} вызов {++counter}");
         }
     }
 
